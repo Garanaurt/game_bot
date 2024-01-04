@@ -86,8 +86,9 @@ class DbShop:
         description = game['description']
         instruction = game['instruction']
         descriptionrf = game['descriptionrf']
-        self.cursor.execute("INSERT INTO games (name, image_path, description, instruction, description_rf) VALUES (?, ?, ?, ?, ?)", 
-                            (name, image_path, description, instruction, descriptionrf))
+        instructionrf = game['instructionrf']
+        self.cursor.execute("INSERT INTO games (name, image_path, description, instruction, description_rf, instruction_rf) VALUES (?, ?, ?, ?, ?, ?)", 
+                            (name, image_path, description, instruction, descriptionrf, instructionrf))
         self.conn.commit()
 
 
@@ -123,6 +124,11 @@ class DbShop:
         self.cursor.execute("UPDATE games SET instruction = ? WHERE id = ?", (instruction, game_id))
         self.conn.commit()
 
+    
+    def db_set_game_instructionrf_where_id(self, game_id, instructionrf):
+        self.cursor.execute("UPDATE games SET instruction_rf = ? WHERE id = ?", (instructionrf, game_id))
+        self.conn.commit()
+
 
     def db_set_game_image_where_id(self, game_id, file_path):
         self.cursor.execute("UPDATE games SET image_path = ? WHERE id = ?", (file_path, game_id))
@@ -137,7 +143,8 @@ class DbShop:
             image_path TEXT,
             description TEXT,
             instruction TEXT,
-            description_rf TEXT                
+            description_rf TEXT,
+            instruction_rf TEXT               
             );""")
         self.conn.commit()
         print('Table games was created')

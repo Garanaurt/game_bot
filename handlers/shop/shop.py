@@ -128,7 +128,7 @@ async def get_rf_game(call: types.CallbackQuery, bot: Bot):
     msg = '<b>Завантажити Русіфікатор 👇</b>\n'
     msg += f"{game_data[5]}\n\n"
     msg += "<b>Інструкція:📖</b>\n"
-    msg += f"{game_data[4]}"
+    msg += f"{game_data[6]}"
     logo = types.FSInputFile(game_data[2])
     mess = await call.message.answer_photo(photo=logo,
                                            caption=msg, 

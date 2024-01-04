@@ -17,7 +17,8 @@ def kb_edit_game_proc(game_id):
         [types.InlineKeyboardButton(text='Змінити назву', callback_data=f"change_name_{game_id}")],
         [types.InlineKeyboardButton(text='Змінити опис укр', callback_data=f"change_description_{game_id}")],
         [types.InlineKeyboardButton(text='Змінити опис рф', callback_data=f"change_descriptionrf_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити інструкцію', callback_data=f"change_instruction_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити інструкцію укр', callback_data=f"change_instruction_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити інструкцію рф', callback_data=f"change_instructionrf_{game_id}")],
         [types.InlineKeyboardButton(text='Змінити картинку', callback_data=f"change_image_{game_id}")]
     ]
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)

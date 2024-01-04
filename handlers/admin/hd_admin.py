@@ -119,7 +119,7 @@ async def add_product_proc_name(message: types.Message, state: FSMContext):
     name = message.text
     await state.update_data(name=name)
     await state.set_state(AddProductStates.DESCRIPTION)
-    me = await message.answer(f"Прийшли укр опис гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Прийшли укр опис гри якщо немає пиши 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -128,7 +128,7 @@ async def add_product_proc_description(message: types.Message, state: FSMContext
     description = message.text
     await state.update_data(description=description)
     await state.set_state(AddProductStates.DESCRIPTIONRF)
-    me = await message.answer(f"Прийшли рф опис гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Прийшли рф опис гри якщо немає пиши 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 

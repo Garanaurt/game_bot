@@ -6,9 +6,6 @@ import re
 from main import MYGROUP
 
 
-#MYGROUP = '@membertestchane'
-
-
 
 router = Router()
 
@@ -37,6 +34,16 @@ async def get_list(call: types.CallbackQuery, bot: Bot):
     await star(call, bot)
 
 
+
+@router.message(lambda c: re.match(r'^[\w-]+$', c.text))
+async def echo(message: types.Message):
+    # Отправляем обратно тот же текст, который пришел от пользователя
+    msg = '<b>Oберіть гру із списку</b>'
+    me = await message.answer(msg, parse_mode='HTML')
+    await save_message(me)
+
+
+
 @router.message(Command('start'))
 async def cmd_start(message: types.Message, bot: Bot):
     await star(message, bot) 
@@ -47,6 +54,7 @@ async def star(message: types.Message, bot: Bot):
     username = message.from_user.username
     user_id = message.from_user.id
     user_channel_status = await bot.get_chat_member(chat_id=MYGROUP, user_id=user_id)
+    firstname = message.from_user.first_name
     await delete_chat_mess(bot, user_id)
     if user_channel_status.status == 'left':
         await bot.send_message(user_id, f'Ви не підписані на канал {MYGROUP}, підпишіться і спрбуйте ще')
@@ -55,7 +63,7 @@ async def star(message: types.Message, bot: Bot):
         logo = types.FSInputFile('logolang.jpg')
         mess = await bot.send_photo(user_id,
                                     logo,
-                                    caption=f'<b>Привет {username}! Я тут задля того, щоб тобі допомогти. Обери мову, якою будеш проходити гру!</b>',
+                                    caption=f'<b>Вітаю {firstname}! Я тут задля того, щоб тобі допомогти. Обери мову, якою будеш проходити гру!</b>',
                                     reply_markup=kb_set_lang(), parse_mode='HTML')
         await save_message(mess)
 
@@ -65,7 +73,8 @@ async def set_lang_ukr(call: types.CallbackQuery, bot: Bot):
     chat_id = call.from_user.id
     games = db.db_get_all_games()
     await delete_chat_mess(bot, chat_id)
-    msg = '<b>Вибери гру яку будеш проходити</b>'
+    username = call.from_user.first_name
+    msg = f'<b>{username} на цій сторінці ти можеш обрати назву гри 🎮, яку будеш проходити!</b>'
     logo = types.FSInputFile('logogames.jpg')
     me = await bot.send_photo(chat_id, 
                               photo=logo, 
@@ -79,7 +88,7 @@ async def set_lang_ukr(call: types.CallbackQuery, bot: Bot):
 async def get_ukr_game(call: types.CallbackQuery, bot: Bot):
     game_id = call.data.split('_')[3]
     game_data = db.db_get_game_where_id(game_id)
-    chat_id = call.message.from_user.id
+    chat_id = call.from_user.id
     await delete_chat_mess(bot, chat_id)
     msg = '<b>Завантажити Українізатор 👇</b>\n'
     msg += f"{game_data[3]}\n\n"
@@ -96,9 +105,10 @@ async def get_ukr_game(call: types.CallbackQuery, bot: Bot):
 @router.callback_query(lambda c: c.data == "russian")
 async def set_lang_rf(call: types.CallbackQuery, bot: Bot):
     chat_id = call.from_user.id
+    username = call.from_user.first_name
     games = db.db_get_all_games()
     await delete_chat_mess(bot, chat_id)
-    msg = '<b>Вибери гру яку будеш проходити</b>'
+    msg = f'<b>{username} на цій сторінці ти можеш обрати назву гри 🎮, яку будеш проходити!</b>'
     logo = types.FSInputFile('logogames.jpg')
     me = await bot.send_photo(chat_id, 
                               photo=logo, 
@@ -112,7 +122,8 @@ async def set_lang_rf(call: types.CallbackQuery, bot: Bot):
 async def get_rf_game(call: types.CallbackQuery, bot: Bot):
     game_id = call.data.split('_')[3]
     game_data = db.db_get_game_where_id(game_id)
-    chat_id = call.message.from_user.id
+    chat_id = call.from_user.id
+    
     await delete_chat_mess(bot, chat_id)
     msg = '<b>Завантажити Русіфікатор 👇</b>\n'
     msg += f"{game_data[5]}\n\n"

@@ -5,15 +5,15 @@ from handlers.shop import shop
 
 
 #Група на яку має бути підписаний користувач
-MYGROUP = '@membertestchane'
+MYGROUP = '@dzigari'
 
 
 #Токен для адмінки
-TOKEN = '6275915048:AAFjJo5swSwJBTMdCpy1oHG-crySYilSd5M'
+TOKEN = '6856469545:AAFd5FOUHO81w8T-g93goFmuXkbMzkIxswM'
 
 
 #Токен основного бота
-SHOP_TOKEN = '5756085358:AAEboc6ZRK1pkgCnB1hDL_WTNlUqlTDWNg0'
+SHOP_TOKEN = '6850590181:AAE90MAY3O_OJxGaj6fqT1czsBZUICYqtJM'
 
 
 

@@ -18,8 +18,11 @@ def kb_set_lang():
 def kb_ukr_all_games(games):
     keys = []
     for game in games:
-        keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"get_game_ukr_{game[0]}")])
-    keys.append([types.InlineKeyboardButton(text='Назад до вибору мови', callback_data="go_to_lang")],)
+        if game[3] == 'немає':
+            pass
+        else:
+            keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"get_game_ukr_{game[0]}")])
+    keys.append([types.InlineKeyboardButton(text='Назад до вибору мови', callback_data="go_to_lang")])
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
 
@@ -40,7 +43,11 @@ def kb_ukr_back():
 def kb_rf_all_games(games):
     keys = []
     for game in games:
-        keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"get_game_rf_{game[0]}")])
+        if game[5] == 'немає':
+            pass
+        else:
+            keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"get_game_rf_{game[0]}")])
+    keys.append([types.InlineKeyboardButton(text='Назад до вибору мови', callback_data="go_to_lang")])
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
 

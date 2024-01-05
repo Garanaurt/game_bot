@@ -5,7 +5,7 @@ from aiogram import types
 
 def kb_cancel_but():
     keys = [
-        [types.InlineKeyboardButton(text='Відміна', callback_data="cancel_adding")],
+        [types.InlineKeyboardButton(text='Скасувати', callback_data="cancel_adding")],
     ]
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
@@ -14,12 +14,12 @@ def kb_cancel_but():
 
 def kb_edit_game_proc(game_id):
     keys = [
-        [types.InlineKeyboardButton(text='Змінити назву', callback_data=f"change_name_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити опис укр', callback_data=f"change_description_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити опис рф', callback_data=f"change_descriptionrf_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити інструкцію укр', callback_data=f"change_instruction_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити інструкцію рф', callback_data=f"change_instructionrf_{game_id}")],
-        [types.InlineKeyboardButton(text='Змінити картинку', callback_data=f"change_image_{game_id}")]
+        [types.InlineKeyboardButton(text='Змінити назву гри', callback_data=f"change_name_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити посилання UA', callback_data=f"change_description_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити посилання RU', callback_data=f"change_descriptionrf_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити інструкцію UA', callback_data=f"change_instruction_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити інструкцію RU', callback_data=f"change_instructionrf_{game_id}")],
+        [types.InlineKeyboardButton(text='Змінити світлину з гри', callback_data=f"change_image_{game_id}")]
     ]
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
@@ -27,10 +27,11 @@ def kb_edit_game_proc(game_id):
 
 
 def kb_edit_game(games):
+    sorted_games = sorted(games, key=lambda game: game[1].lower())
     keys = []
-    for game in games:
+    for game in sorted_games:
         keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"edit_game_{game[0]}")])
-    keys.append([types.InlineKeyboardButton(text='Відміна', callback_data="star")])
+    keys.append([types.InlineKeyboardButton(text='Скасувати', callback_data="star")])
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
 
@@ -47,10 +48,11 @@ def kb_go_to_main_menu():
 
 
 def kb_delete_game(games):
+    sorted_games = sorted(games, key=lambda game: game[1].lower())
     keys = []
-    for game in games:
+    for game in sorted_games:
         keys.append([types.InlineKeyboardButton(text=f'{game[1]}', callback_data=f"delete_game_{game[0]}")])
-    keys.append([types.InlineKeyboardButton(text='Відміна', callback_data="star")])
+    keys.append([types.InlineKeyboardButton(text='Скасувати', callback_data="star")])
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
 
@@ -64,7 +66,6 @@ def kb_get_main_menu():
         ]  
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
-
 
 
 

@@ -3,7 +3,23 @@ from aiogram.filters import Command
 from create_db import db
 from keyboards.shop_kb import kb_set_lang, kb_ukr_all_games, kb_ukr_back, kb_rf_back, kb_rf_all_games
 import re
+from aiogram.fsm.context import FSMContext
+from aiogram.filters.state import State, StatesGroup
 from main import MYGROUP
+
+
+
+class SetLangStates(StatesGroup):
+    LANG = State()
+
+
+class SetGameStates(StatesGroup):
+    GAME = State()
+
+
+class GameState(StatesGroup):
+    GAME = State()
+
 
 
 
@@ -30,37 +46,51 @@ async def save_message(message):
 
 
 @router.callback_query(lambda c: re.match(r'^go_to_lang', c.data))
-async def get_list(call: types.CallbackQuery, bot: Bot):
-    await star(call, bot)
+async def get_list(call: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await star(call, bot, state)
 
 
 
-@router.message(lambda c: re.match(r'^[\w-]+$', c.text))
+@router.message(SetGameStates.GAME, lambda c: re.match(r'^[\w-]+$', c.text))
 async def echo(message: types.Message):
-    # Отправляем обратно тот же текст, который пришел от пользователя
     msg = '<b>Oберіть гру із списку</b>'
     me = await message.answer(msg, parse_mode='HTML')
     await save_message(me)
 
 
 
+@router.message(SetLangStates.LANG, lambda c: re.match(r'^[\w-]+$', c.text))
+async def echo(message: types.Message):
+    msg = '<b>Обери мову якою будеш проходити гру</b>'
+    me = await message.answer(msg, parse_mode='HTML')
+    await save_message(me)
+
+
+@router.message(GameState.GAME, lambda c: re.match(r'^[\w-]+$', c.text))
+async def echo(message: types.Message):
+    msg = '<b>Завантажуй і встановлюй згідно з інструкцією</b>'
+    me = await message.answer(msg, parse_mode='HTML')
+    await save_message(me)
+
+
 @router.message(Command('start'))
-async def cmd_start(message: types.Message, bot: Bot):
-    await star(message, bot) 
+async def cmd_start(message: types.Message, bot: Bot, state: FSMContext):
+    await star(message, bot, state) 
     
 
 @router.callback_query(F.data == "star")
-async def star(message: types.Message, bot: Bot):
-    username = message.from_user.username
+async def star(message: types.Message, bot: Bot, state: FSMContext):
+    await state.clear()
     user_id = message.from_user.id
     user_channel_status = await bot.get_chat_member(chat_id=MYGROUP, user_id=user_id)
     firstname = message.from_user.first_name
     await delete_chat_mess(bot, user_id)
     if user_channel_status.status == 'left':
-        await bot.send_message(user_id, f'Ви не підписані на канал {MYGROUP}, підпишіться і спрбуйте ще')
+        await bot.send_message(user_id, f'Ви не підписані на канал {MYGROUP}, підпишіться та спробуйте знову')
         return
     else:
         logo = types.FSInputFile('logolang.jpg')
+        await state.set_state(SetLangStates.LANG)
         mess = await bot.send_photo(user_id,
                                     logo,
                                     caption=f'<b>Вітаю {firstname}! Я тут задля того, щоб тобі допомогти. Обери мову, якою будеш проходити гру!</b>',
@@ -69,7 +99,9 @@ async def star(message: types.Message, bot: Bot):
 
 
 @router.callback_query(lambda c: c.data == "ukrainian")
-async def set_lang_ukr(call: types.CallbackQuery, bot: Bot):
+async def set_lang_ukr(call: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await state.clear()
+    await state.set_state(SetGameStates.GAME)
     chat_id = call.from_user.id
     games = db.db_get_all_games()
     await delete_chat_mess(bot, chat_id)
@@ -85,7 +117,9 @@ async def set_lang_ukr(call: types.CallbackQuery, bot: Bot):
 
 
 @router.callback_query(lambda c: re.match(r'^get_game_ukr_[\w-]+$', c.data))
-async def get_ukr_game(call: types.CallbackQuery, bot: Bot):
+async def get_ukr_game(call: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await state.clear()
+    await state.set_state(GameState.GAME)
     game_id = call.data.split('_')[3]
     game_data = db.db_get_game_where_id(game_id)
     chat_id = call.from_user.id
@@ -103,7 +137,9 @@ async def get_ukr_game(call: types.CallbackQuery, bot: Bot):
 
 
 @router.callback_query(lambda c: c.data == "russian")
-async def set_lang_rf(call: types.CallbackQuery, bot: Bot):
+async def set_lang_rf(call: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await state.clear()
+    await state.set_state(SetGameStates.GAME)
     chat_id = call.from_user.id
     username = call.from_user.first_name
     games = db.db_get_all_games()
@@ -119,13 +155,14 @@ async def set_lang_rf(call: types.CallbackQuery, bot: Bot):
 
 
 @router.callback_query(lambda c: re.match(r'^get_game_rf_[\w-]+$', c.data))
-async def get_rf_game(call: types.CallbackQuery, bot: Bot):
+async def get_rf_game(call: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await state.clear()
+    await state.set_state(GameState.GAME)
     game_id = call.data.split('_')[3]
     game_data = db.db_get_game_where_id(game_id)
     chat_id = call.from_user.id
-    
     await delete_chat_mess(bot, chat_id)
-    msg = '<b>Завантажити Русіфікатор 👇</b>\n'
+    msg = '<b>Завантажити Русифікатор 👇</b>\n'
     msg += f"{game_data[5]}\n\n"
     msg += "<b>Інструкція:📖</b>\n"
     msg += f"{game_data[6]}"

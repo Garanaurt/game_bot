@@ -1,7 +1,6 @@
 from aiogram import Router, Bot, F, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.context import FSMContext
 from aiogram.filters.state import State, StatesGroup
 from create_db import db
 import re
@@ -73,7 +72,7 @@ async def cancel_adding(call: types.CallbackQuery, state: FSMContext, bot: Bot):
     username = call.from_user.username
     chat_id = call.from_user.id
     await delete_chat_mess(bot, chat_id)
-    text = f'Привіт, {username}\n'
+    text = f'Вітаю, {username}\n'
     me = await bot.send_message(chat_id, text, reply_markup=kb_get_main_menu())
     await save_message(me)
     
@@ -90,7 +89,7 @@ async def cmd_star(call: types.CallbackQuery, bot: Bot):
     username = call.from_user.username
     chat_id = call.from_user.id
     await delete_chat_mess(bot, chat_id)
-    text = f'Привіт, {username}\n'
+    text = f'Вітаю, {username}\n'
     me = await bot.send_message(chat_id, text, reply_markup=kb_get_main_menu())
     await save_message(me)
 
@@ -99,7 +98,7 @@ async def cmd_star(call: types.CallbackQuery, bot: Bot):
 async def products_list(call: types.CallbackQuery, bot: Bot):
     chat = call.message.chat.id
     await delete_chat_mess(bot, chat)
-    msg = 'Усі ігри в базі:\n'
+    msg = 'Всі ігри в базі:\n'
     games = db.db_get_all_games()
     if games:
         for game in games:
@@ -115,7 +114,7 @@ async def products_list(call: types.CallbackQuery, bot: Bot):
 @router.callback_query(lambda c: c.data == "add_product_main")
 async def add_product(call: types.CallbackQuery, bot: Bot, state: FSMContext):
     await state.set_state(AddProductStates.NAME)
-    me = await call.message.edit_text(f"Напиши мені назву нової гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await call.message.edit_text(f"Надішли назву нової гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
     
@@ -124,7 +123,7 @@ async def add_product_proc_name(message: types.Message, state: FSMContext):
     name = message.text
     await state.update_data(name=name)
     await state.set_state(AddProductStates.DESCRIPTION)
-    me = await message.answer(f"Прийшли укр опис гри якщо немає пиши 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Надішли UA посилання на гру, якщо відсутнє, пиши - 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -133,7 +132,7 @@ async def add_product_proc_description(message: types.Message, state: FSMContext
     description = message.text
     await state.update_data(description=description)
     await state.set_state(AddProductStates.DESCRIPTIONRF)
-    me = await message.answer(f"Прийшли рф опис гри якщо немає пиши 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Надішли RU посилання на гру, якщо відсутнє, пиши - 'немає'", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -142,7 +141,7 @@ async def add_product_proc_description(message: types.Message, state: FSMContext
     descriptionrf = message.text
     await state.update_data(descriptionrf=descriptionrf)
     await state.set_state(AddProductStates.INSTRUCTION)
-    me = await message.answer(f"Прийшли інстукцію укр для гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Надішли UA інструкцію для гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -151,7 +150,7 @@ async def add_product_proc_instruction(message: types.Message, state: FSMContext
     instruction = message.text
     await state.update_data(instruction=instruction)
     await state.set_state(AddProductStates.INSTRUCTIONRF)
-    me = await message.answer(f"Прийшли інстукцію рф для гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Надішли RU інструкцію для гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -160,7 +159,7 @@ async def add_product_proc_instructionrf(message: types.Message, state: FSMConte
     instructionrf = message.text
     await state.update_data(instructionrf=instructionrf)
     await state.set_state(AddProductStates.IMAGE)
-    me = await message.answer(f"Прийшли картинку", reply_markup=kb_cancel_but(), parse_mode='HTML')
+    me = await message.answer(f"Надішли світлину з гри", reply_markup=kb_cancel_but(), parse_mode='HTML')
     await save_message(me)
 
 
@@ -175,7 +174,7 @@ async def process_product_photo(message: types.Message, state: FSMContext, bot: 
     game_data['image_path'] = file_path
     db.db_add_game_to_db(game_data)
     await state.clear()
-    me = await message.answer(f"Гра у базі", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"Гра в базі", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -185,7 +184,7 @@ async def delete_product(call: types.CallbackQuery, bot: Bot):
     chat = call.message.chat.id
     games = db.db_get_all_games()
     await delete_chat_mess(bot, chat)
-    me = await call.message.answer(f"Вибери гру яку треба видалити", reply_markup=kb_delete_game(games))
+    me = await call.message.answer(f"Обери гру, яку треба видалити", reply_markup=kb_delete_game(games))
     await save_message(me)
 
 
@@ -202,7 +201,7 @@ async def delete_product(call: types.CallbackQuery, bot: Bot):
     chat = call.message.chat.id
     games = db.db_get_all_games()
     await delete_chat_mess(bot, chat)
-    me = await call.message.answer(f"Вибери гру яку треба редагувати", reply_markup=kb_edit_game(games))
+    me = await call.message.answer(f"Обери гру яку треба відредагувати", reply_markup=kb_edit_game(games))
     await save_message(me)
 
 
@@ -213,10 +212,11 @@ async def delete_game_proc(call: types.CallbackQuery, bot: Bot):
     game = db.db_get_game_where_id(game_id)
     msg = ''
     msg += f'Назва - {game[1]}\n'
-    msg += f'Опис укр - {game[3]}\n'
-    msg += f'Опис рф - {game[5]}\n'
-    msg += f'Інструкція - {game[4]}\n\n'
-    msg += 'Вибери що хочеш змінити в цій грі'
+    msg += f'Посилання UA - {game[3]}\n'
+    msg += f'Посилання RU - {game[5]}\n'
+    msg += f'Інструкція UA - {game[4]}\n'
+    msg += f'Інструкция RU - {game[6]}\n\n'
+    msg += 'Обери що хочеш змінити в цій грі'
     me = await call.message.answer(msg, reply_markup=kb_edit_game_proc(game_id))
     await save_message(me)
 
@@ -229,7 +229,7 @@ async def edit_game(call: types.CallbackQuery, bot: Bot, state: FSMContext):
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeNameStates.NAME)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли нову назву", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нову назву гри", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -255,7 +255,7 @@ async def edit_game_descr(call: types.CallbackQuery, bot: Bot, state: FSMContext
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeDescriptionStates.DESCRIPTION)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли новий укр опис гри", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нове RU посилання на гру", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -267,7 +267,7 @@ async def edit_product_proc_descr(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_description_where_id(game_id, description)
     await state.clear()
-    me = await message.answer(f"Опис гри укр змінено", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"RU посилання на гру змінено", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -280,7 +280,7 @@ async def edit_game_descrrf(call: types.CallbackQuery, bot: Bot, state: FSMConte
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeDescriptionrfStates.DESCRIPTIONRF)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли новий рф опис гри", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нове UA посилання на гру", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -292,7 +292,7 @@ async def edit_product_proc_descrrf(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_description_rf_where_id(game_id, descriptionrf)
     await state.clear()
-    me = await message.answer(f"Опис гри рф змінено", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"UA посилання на гру змінено", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -304,7 +304,7 @@ async def edit_game_instr(call: types.CallbackQuery, bot: Bot, state: FSMContext
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeInstructionStates.INSTRUCTION)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли нову інструкцію укр для гри", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нову UA інструкцію для гри", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -316,7 +316,7 @@ async def edit_product_proc_instr(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_instruction_where_id(game_id, instruction)
     await state.clear()
-    me = await message.answer(f"Інструкція укр для гри змінена", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"UA інструкція для гри змінена", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -329,7 +329,7 @@ async def edit_game_instr(call: types.CallbackQuery, bot: Bot, state: FSMContext
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeInstructionrfStates.INSTRUCTIONRF)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли нову інструкцію рф для гри", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нову RU інструкцію для гри", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -341,7 +341,7 @@ async def edit_product_proc_instr(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_instructionrf_where_id(game_id, instructionrf)
     await state.clear()
-    me = await message.answer(f"Інструкція рф для гри змінена", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"RU інструкція для гри змінена", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -354,7 +354,7 @@ async def edit_game_image(call: types.CallbackQuery, bot: Bot, state: FSMContext
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeImageStates.IMAGE)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Прийшли нову картинку для гри", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нову світлину з гри", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -370,5 +370,5 @@ async def edit_product_proc_image(message: types.Message, state: FSMContext, bot
     await bot.download(photo, destination=file_path)
     db.db_set_game_image_where_id(game_id, file_path)
     await state.clear()
-    me = await message.answer(f"Картинка для гри змінена", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"Світлина з гри змінена", reply_markup=kb_go_to_main_menu())
     await save_message(me)

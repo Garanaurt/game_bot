@@ -1,6 +1,4 @@
 from aiogram import types
-import random
-from collections import defaultdict
 
 
 
@@ -58,6 +56,5 @@ def kb_rf_back():
     ]
     kb = types.InlineKeyboardMarkup(inline_keyboard=keys)
     return kb
-
 
 

@@ -101,7 +101,8 @@ async def products_list(call: types.CallbackQuery, bot: Bot):
     msg = 'Всі ігри в базі:\n'
     games = db.db_get_all_games()
     if games:
-        for game in games:
+        sorted_games = sorted(games, key=lambda game: game[1].lower())
+        for game in sorted_games:
             msg += f'{game[1]} \n'
     else:
         msg += f'Пусто'

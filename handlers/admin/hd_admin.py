@@ -256,7 +256,7 @@ async def edit_game_descr(call: types.CallbackQuery, bot: Bot, state: FSMContext
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeDescriptionStates.DESCRIPTION)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Надішли нове RU посилання на гру", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нове UA посилання на гру", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -268,7 +268,7 @@ async def edit_product_proc_descr(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_description_where_id(game_id, description)
     await state.clear()
-    me = await message.answer(f"RU посилання на гру змінено", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"UA посилання на гру змінено", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
@@ -281,7 +281,7 @@ async def edit_game_descrrf(call: types.CallbackQuery, bot: Bot, state: FSMConte
     await delete_chat_mess(bot, chat)
     await state.set_state(ChangeDescriptionrfStates.DESCRIPTIONRF)
     await state.update_data(game_id=game_id)
-    me = await call.message.answer(f"Надішли нове UA посилання на гру", reply_markup=kb_cancel_but())
+    me = await call.message.answer(f"Надішли нове RU посилання на гру", reply_markup=kb_cancel_but())
     await save_message(me)
 
 
@@ -293,7 +293,7 @@ async def edit_product_proc_descrrf(message: types.Message, state: FSMContext):
     game_id = data['game_id']
     db.db_set_game_description_rf_where_id(game_id, descriptionrf)
     await state.clear()
-    me = await message.answer(f"UA посилання на гру змінено", reply_markup=kb_go_to_main_menu())
+    me = await message.answer(f"RU посилання на гру змінено", reply_markup=kb_go_to_main_menu())
     await save_message(me)
 
 
